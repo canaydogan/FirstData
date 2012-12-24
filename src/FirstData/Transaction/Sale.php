@@ -12,6 +12,8 @@ class Sale extends AbstractTransaction
 
     public function toXml($variables)
     {
+        $chargeTotal = $variables['chargeTotal']->getAmount();
+
         $xml = '<?xml version="1.0"?>';
         $xml .= '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">';
         $xml .= '<SOAP-ENV:Body>';
@@ -29,7 +31,7 @@ class Sale extends AbstractTransaction
         $xml .= '<v1:CardCodeValue>' . $variables['card']->getCsc() . '</v1:CardCodeValue>';
         $xml .= '</v1:CreditCardData>';
         $xml .= '<v1:Payment>';
-        $xml .= '<v1:ChargeTotal>' . $variables['chargeTotal']->getAmount() . '</v1:ChargeTotal>';
+        $xml .= '<v1:ChargeTotal>' . $chargeTotal . '</v1:ChargeTotal>';
         $xml .= '</v1:Payment>';
         $xml .= '</v1:Transaction>';
         $xml .= '</fdggwsapi:FDGGWSApiOrderRequest>';
