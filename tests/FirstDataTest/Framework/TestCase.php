@@ -9,21 +9,15 @@ use PHPUnit_Framework_TestCase,
     FirstData\Adapter\Curl,
     FirstData\Adapter\Response\Xml,
     FirstData\Transaction\Result\SaleResult,
-    FirstData\Transaction\Sale;
+    FirstData\Transaction\Sale,
+    FirstDataTest\Bootstrap;
 
 class TestCase extends PHPUnit_Framework_TestCase
 {
 
-    public static $locator;
-
-    public function setLocator($locator)
+    public function getServiceLocator()
     {
-        self::$locator = $locator;
-    }
-
-    public function getLocator()
-    {
-        return self::$locator;
+        return Bootstrap::getServiceManager();
     }
 
     public function newCreditCard()

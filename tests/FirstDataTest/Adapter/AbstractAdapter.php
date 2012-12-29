@@ -28,7 +28,7 @@ abstract class AbstractAdapter extends TestCase
 
     public function testGetConfigurationViaLocator()
     {
-        $adapter = $this->getLocator()->get(get_class($this->_adapter));
+        $adapter = $this->getServiceLocator()->get(get_class($this->_adapter));
 
         $this->assertInstanceOf(
             'FirstData\Configuration\AbstractConfiguration',

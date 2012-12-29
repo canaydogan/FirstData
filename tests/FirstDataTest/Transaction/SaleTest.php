@@ -99,7 +99,7 @@ class SaleTest extends AbstractTransaction
 
     public function testGetAdapterViaLocator()
     {
-        $transaction = $this->getLocator()->get('FirstData\Transaction\Sale');
+        $transaction = $this->getServiceLocator()->get('FirstData\Transaction\Sale');
         $this->assertInstanceOf(
             'FirstData\Adapter\AbstractAdapter',
             $transaction->getAdapter()
