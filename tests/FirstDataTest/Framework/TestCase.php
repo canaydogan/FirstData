@@ -180,7 +180,8 @@ class TestCase extends PHPUnit_Framework_TestCase
     {
         $response = $this->newValidXmlAdapterResponse();
         $response->setValues(array(
-            'TransactionResult' => 'NOT_APPROVED'
+            'TransactionResult' => 'NOT_APPROVED',
+            'ErrorMessage' => 'SGS-002303: Invalid credit card number.'
         ));
 
         $adapter = $this->getMockForAbstractClass(

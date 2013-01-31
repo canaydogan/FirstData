@@ -66,6 +66,8 @@ class Sale extends AbstractTransaction
             $result->setSuccess(true);
             $result->setOrderId($response->getValueByKey('OrderId'));
             $result->setTransactionId($response->getValueByKey('TransactionID'));
+        } else {
+            $result->setErrorMessage($response->getValueByKey('ErrorMessage'));
         }
 
         return $result;

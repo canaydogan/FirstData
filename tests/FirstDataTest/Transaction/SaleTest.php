@@ -36,6 +36,7 @@ class SaleTest extends AbstractTransaction
         $this->assertTrue($result->isSuccess());
         $this->assertNotNull($result->getOrderId());
         $this->assertNotNull($result->getTransactionId());
+        $this->assertNull($result->getErrorMessage());
     }
 
     public function testDoTransactionWithInvalidCardNumberViaMockAdapter()
@@ -50,6 +51,10 @@ class SaleTest extends AbstractTransaction
         $this->assertFalse($result->isSuccess());
         $this->assertNull($result->getOrderId());
         $this->assertNull($result->getTransactionId());
+        $this->assertEquals(
+            'SGS-002303: Invalid credit card number.',
+            $result->getErrorMessage()
+        );
     }
 
     public function testDoTransactionWithNoAdapter()
@@ -95,6 +100,23 @@ class SaleTest extends AbstractTransaction
         $this->assertTrue($result->isSuccess());
         $this->assertNotNull($result->getOrderId());
         $this->assertNotNull($result->getTransactionId());
+        $this->assertNull($result->getErrorMessage());
+    }
+
+    public function testDoTransactionWithInvalidVariablesViaFirstDatRealAdapter()
+    {
+        $variables = $this->getValidVariablesForSaleTransaction();
+        $variables['card']->setNumber('411111111111111');
+
+        $transaction = $this->newValidTransaction();
+        $transaction->setAdapter($this->newValidCurlAdapter());
+
+        $result = $transaction->doTransaction($variables);
+
+        $this->assertFalse($result->isSuccess());
+        $this->assertNull($result->getOrderId());
+        $this->assertNull($result->getTransactionId());
+        $this->assertEquals('SGS-002303: Invalid credit card number.', $result->getErrorMessage());
     }
 
     public function testGetAdapterViaLocator()

@@ -21,6 +21,11 @@ abstract class AbstractResult
     protected $_transactionId;
 
     /**
+     * @var string
+     */
+    protected $_errorMessage;
+
+    /**
      * @return boolean
      */
     public function isSuccess()
@@ -67,4 +72,21 @@ abstract class AbstractResult
     {
         return $this->_transactionId;
     }
+
+    /**
+     * @param string $errorMessage
+     */
+    public function setErrorMessage($errorMessage)
+    {
+        $this->_errorMessage = $errorMessage;
+    }
+
+    /**
+     * @return string
+     */
+    public function getErrorMessage()
+    {
+        return $this->_errorMessage;
+    }
+
 }

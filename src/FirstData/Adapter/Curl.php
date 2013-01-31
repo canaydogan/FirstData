@@ -29,8 +29,9 @@ class Curl extends AbstractAdapter
 
         $xml = curl_exec($ch);
 
-        if (!$xml)
+        if (!$xml) {
             throw new RuntimeException("An error occured no response server!");
+        }
 
         $response = new Xml();
         $response->loadXml($xml);
