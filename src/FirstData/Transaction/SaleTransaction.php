@@ -2,12 +2,12 @@
 
 namespace FirstData\Transaction;
 
-use FirstData\Transaction\AbstractTransaction,
-    FirstData\Transaction\Result\SaleResult,
-    RuntimeException,
-    InvalidArgumentException;
+use FirstData\Transaction\AbstractTransaction;
+use FirstData\Transaction\Result\SaleResult;
+use RuntimeException;
+use InvalidArgumentException;
 
-class Sale extends AbstractTransaction
+class SaleTransaction extends AbstractTransaction
 {
 
     public function toXml($variables)
@@ -51,11 +51,11 @@ class Sale extends AbstractTransaction
         }
 
         if (!isset($variables['card']) || !$variables['card']) {
-            throw new InvalidArgumentException('No Card Model');
+            throw new InvalidArgumentException('No Card');
         }
 
         if (!isset($variables['chargeTotal']) || !$variables['chargeTotal']) {
-            throw new InvalidArgumentException('No Charge Total Model');
+            throw new InvalidArgumentException('No Charge Total');
         }
 
         $result = new SaleResult();
@@ -66,6 +66,7 @@ class Sale extends AbstractTransaction
             $result->setSuccess(true);
             $result->setOrderId($response->getValueByKey('OrderId'));
             $result->setTransactionId($response->getValueByKey('TransactionID'));
+            $result->setApprovalCode($response->getValueByKey('ApprovalCode'));
         } else {
             $result->setErrorMessage($response->getValueByKey('ErrorMessage'));
         }

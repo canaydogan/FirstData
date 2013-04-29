@@ -28,6 +28,7 @@ class AbstractResultTest extends TestCase
         $this->_result->setOrderId(1234);
         $this->_result->setTransactionId(4321);
         $this->_result->setErrorMessage('SGS-002303: Invalid credit card number.');
+        $this->_result->setApprovalCode('OK242C0016964500: X:');
 
         $this->assertTrue($this->_result->isSuccess());
         $this->assertEquals(1234, $this->_result->getOrderId());
@@ -36,6 +37,7 @@ class AbstractResultTest extends TestCase
             'SGS-002303: Invalid credit card number.',
             $this->_result->getErrorMessage()
         );
+        $this->assertEquals('OK242C0016964500: X:', $this->_result->getApprovalCode());
     }
 
 }

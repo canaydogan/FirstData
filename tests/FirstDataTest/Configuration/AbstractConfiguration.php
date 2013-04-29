@@ -28,7 +28,7 @@ abstract class AbstractConfiguration extends TestCase
 
     public function testParametersViaLocator()
     {
-        $configuration = $this->getServiceLocator()->get(get_class($this->_configuration));
+        $configuration = $this->getServiceLocator()->get('first_data_configuration');
 
         $this->assertNotNull($configuration->getApiUrl());
         $this->assertNotNull($configuration->getUsername());

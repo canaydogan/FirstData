@@ -25,6 +25,35 @@ class SaleTest extends AbstractTransaction
         $this->assertEquals($this->getValidSaleTransactionXml($variables), $xml);
     }
 
+    public function testDoTransactionWithNoAdapter()
+    {
+        $this->setExpectedException('RuntimeException', 'No Adapter');
+        $variables = $this->getValidVariablesForSaleTransaction();
+        $this->_transaction->doTransaction($variables);
+    }
+
+    public function testDoTransactionWithNoCard()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'No Card');
+        $transaction = $this->newValidTransaction();
+        $transaction->setAdapter($this->newMockAdapterForSuccess());
+        $variables = $this->getValidVariablesForSaleTransaction();
+
+        unset($variables['card']);
+        $transaction->doTransaction($variables);
+    }
+
+    public function testDoTransactionWithNoChargeTotal()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'No Charge Total');
+        $transaction = $this->newValidTransaction();
+        $transaction->setAdapter($this->newMockAdapterForSuccess());
+        $variables = $this->getValidVariablesForSaleTransaction();
+
+        unset($variables['chargeTotal']);
+        $transaction->doTransaction($variables);
+    }
+
     public function testDoTransactionWithValidVariablesViaMockAdapter()
     {
         $variables = $this->getValidVariablesForSaleTransaction();
@@ -37,12 +66,12 @@ class SaleTest extends AbstractTransaction
         $this->assertNotNull($result->getOrderId());
         $this->assertNotNull($result->getTransactionId());
         $this->assertNull($result->getErrorMessage());
+        $this->assertNotNull($result->getApprovalCode());
     }
 
     public function testDoTransactionWithInvalidCardNumberViaMockAdapter()
     {
         $variables = $this->getValidVariablesForSaleTransaction();
-        $variables['card']->setNumber('invalidnumber');
         $transaction = $this->newValidTransaction();
         $transaction->setAdapter($this->newMockAdapterForUnsuccess());
 
@@ -57,39 +86,11 @@ class SaleTest extends AbstractTransaction
         );
     }
 
-    public function testDoTransactionWithNoAdapter()
-    {
-        $this->setExpectedException('RuntimeException', 'No Adapter');
-        $variables = $this->getValidVariablesForSaleTransaction();
-        $this->_transaction->doTransaction($variables);
-    }
-
-    public function testDoTransactionWithNoCard()
-    {
-        $this->setExpectedException('InvalidArgumentException', 'No Card Model');
-        $transaction = $this->newValidTransaction();
-        $transaction->setAdapter($this->newMockAdapterForSuccess());
-        $variables = $this->getValidVariablesForSaleTransaction();
-
-        unset($variables['card']);
-        $transaction->doTransaction($variables);
-    }
-
-    public function testDoTransactionWithNoChargeTotal()
-    {
-        $this->setExpectedException('InvalidArgumentException', 'No Charge Total Model');
-        $transaction = $this->newValidTransaction();
-        $transaction->setAdapter($this->newMockAdapterForSuccess());
-        $variables = $this->getValidVariablesForSaleTransaction();
-
-        unset($variables['chargeTotal']);
-        $transaction->doTransaction($variables);
-    }
 
     /**
      * Real World Test
      */
-    public function testDoTransactionWithValidVariablesViaFirstDatRealAdapter()
+    public function _testDoTransactionWithValidVariablesViaFirstDataRealAdapter()
     {
         $variables = $this->getValidVariablesForSaleTransaction();
         $transaction = $this->newValidTransaction();
@@ -101,9 +102,10 @@ class SaleTest extends AbstractTransaction
         $this->assertNotNull($result->getOrderId());
         $this->assertNotNull($result->getTransactionId());
         $this->assertNull($result->getErrorMessage());
+        $this->assertNotNull($result->getApprovalCode());
     }
 
-    public function testDoTransactionWithInvalidVariablesViaFirstDatRealAdapter()
+    public function _testDoTransactionWithInvalidVariablesViaFirstDataRealAdapter()
     {
         $variables = $this->getValidVariablesForSaleTransaction();
         $variables['card']->setNumber('411111111111111');
@@ -116,12 +118,13 @@ class SaleTest extends AbstractTransaction
         $this->assertFalse($result->isSuccess());
         $this->assertNull($result->getOrderId());
         $this->assertNull($result->getTransactionId());
+        $this->assertNull($result->getApprovalCode());
         $this->assertEquals('SGS-002303: Invalid credit card number.', $result->getErrorMessage());
     }
 
     public function testGetAdapterViaLocator()
     {
-        $transaction = $this->getServiceLocator()->get('FirstData\Transaction\Sale');
+        $transaction = $this->getServiceLocator()->get('FirstData\Transaction\SaleTransaction');
         $this->assertInstanceOf(
             'FirstData\Adapter\AbstractAdapter',
             $transaction->getAdapter()

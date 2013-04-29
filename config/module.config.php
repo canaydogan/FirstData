@@ -3,7 +3,7 @@
 return array(
     'service_manager' => array(
         'factories' => array(
-            'FirstData\Configuration\StandardConfiguration' => function ($sm) {
+            'first_data_configuration' => function ($sm) {
                 $configuration = new \FirstData\Configuration\StandardConfiguration();
                 $configuration->setApiUrl('https://ws.firstdataglobalgateway.com/fdggwsapi/services/order.wsdl');
                 $configuration->setUsername('');
@@ -17,42 +17,19 @@ return array(
             },
             'FirstData\Adapter\Curl' => function($sm) {
                 $adapter = new \FirstData\Adapter\Curl();
-                $adapter->setConfiguration($sm->get('FirstData\Configuration\StandardConfiguration'));
+                $adapter->setConfiguration($sm->get('first_data_configuration'));
                 return $adapter;
             },
-            'FirstData\Transaction\Sale' => function($sm) {
-                $transaction = new \FirstData\Transaction\Sale();
+            'FirstData\Transaction\SaleTransaction' => function($sm) {
+                $transaction = new \FirstData\Transaction\SaleTransaction();
+                $transaction->setAdapter($sm->get('FirstData\Adapter\Curl'));
+                return $transaction;
+            },
+            'FirstData\Transaction\ReturnTransaction' => function($sm) {
+                $transaction = new \FirstData\Transaction\ReturnTransaction();
                 $transaction->setAdapter($sm->get('FirstData\Adapter\Curl'));
                 return $transaction;
             }
         )
     )
 );
-/*
-return array(
-    'di' => array(
-        'instance' => array(
-            'FirstData\Configuration\StandardConfiguration' => array(
-                'parameters' => array(
-                    'apiUrl' => 'https://ws.firstdataglobalgateway.com/fdggwsapi/services/order.wsdl',
-                    'username' => '',
-                    'password' => '',
-                    'storeId' => '',
-                    'sslKey' => '',
-                    'sslKeyPassword' => '',
-                    'sslCert' => ''
-                )
-            ),
-            'FirstData\Adapter\Curl' => array(
-                'parameters' => array(
-                    'configuration' => 'FirstData\Configuration\StandardConfiguration'
-                )
-            ),
-            'FirstData\Transaction\Sale' => array(
-                'parameters' => array(
-                    'adapter' => 'FirstData\Adapter\Curl'
-                )
-            )
-        )
-    )
-);*/

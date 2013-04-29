@@ -4,17 +4,17 @@ namespace FirstDataTest\Transaction\Result;
 
 use FirstDataTest\Transaction\Result\AbstractResult;
 
-class SaleResultTest extends AbstractResult
+class ReturnResultTest extends AbstractResult
 {
 
     public function newResult()
     {
-        return $this->newTransactionSaleResult();
+        return $this->newTransactionReturnResult();
     }
 
     public function newValidResult()
     {
-        return $this->newValidTransactionSaleResult();
+        return $this->newValidTransactionReturnResult();
     }
 
 }

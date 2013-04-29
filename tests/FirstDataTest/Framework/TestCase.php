@@ -2,15 +2,18 @@
 
 namespace FirstDataTest\Framework;
 
-use PHPUnit_Framework_TestCase,
-    FirstData\Model\Card\CreditCard,
-    FirstData\Configuration\StandardConfiguration,
-    FirstData\Model\Amount\ChargeTotal,
-    FirstData\Adapter\Curl,
-    FirstData\Adapter\Response\Xml,
-    FirstData\Transaction\Result\SaleResult,
-    FirstData\Transaction\Sale,
-    FirstDataTest\Bootstrap;
+use PHPUnit_Framework_TestCase;
+use FirstData\Model\Card\CreditCard;
+use FirstData\Configuration\StandardConfiguration;
+use FirstData\Model\Amount\ChargeTotal;
+use FirstData\Adapter\Curl;
+use FirstData\Adapter\Response\Xml;
+use FirstData\Transaction\Result\SaleResult;
+use FirstData\Transaction\SaleTransaction;
+use FirstDataTest\Bootstrap;
+use FirstData\Transaction\Result\ReturnResult;
+use FirstData\Transaction\ReturnTransaction;
+use FirstData\Model\Order\StandardOrder;
 
 class TestCase extends PHPUnit_Framework_TestCase
 {
@@ -66,7 +69,7 @@ class TestCase extends PHPUnit_Framework_TestCase
     public function newValidChargeTotalAmount()
     {
         $amount = $this->newChargeTotalAmount();
-        $amount->setAmount(10);
+        $amount->setAmount(1);
 
         return $amount;
     }
@@ -110,7 +113,7 @@ class TestCase extends PHPUnit_Framework_TestCase
 
     public function newSaleTransaction()
     {
-        return new Sale();
+        return new SaleTransaction();
     }
 
     public function newValidSaleTransaction()
@@ -163,7 +166,8 @@ class TestCase extends PHPUnit_Framework_TestCase
         $response->setValues(array(
             'OrderId' => 123,
             'TransactionID' => 321,
-            'TransactionResult' => Sale::TRANSACTION_RESULT_APPROVED
+            'TransactionResult' => SaleTransaction::TRANSACTION_RESULT_APPROVED,
+            'ApprovalCode' => 'OK242C0016964500: X:'
         ));
 
         $adapter = $this->getMockForAbstractClass(
@@ -193,5 +197,81 @@ class TestCase extends PHPUnit_Framework_TestCase
 
         return $adapter;
     }
+
+    public function newTransactionReturnResult()
+    {
+        return new ReturnResult();
+    }
+
+    public function newValidTransactionReturnResult()
+    {
+        $result = $this->newTransactionReturnResult();
+
+        return $result;
+    }
+
+    public function newReturnTransaction()
+    {
+        return new ReturnTransaction();
+    }
+
+    public function newValidReturnTransaction()
+    {
+        $transaction = $this->newReturnTransaction();
+
+        return $transaction;
+    }
+
+    public function getValidReturnTransactionXml($variables)
+    {
+        $xml = '<?xml version="1.0"?>';
+        $xml .= '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">';
+        $xml .= '<SOAP-ENV:Body>';
+        $xml .= '<fdggwsapi:FDGGWSApiOrderRequest xmlns:fdggwsapi="http://secure.linkpt.net/fdggwsapi/schemas_us/fdggwsapi" xmlns:v1="http://secure.linkpt.net/fdggwsapi/schemas_us/v1">';
+        $xml .= '<v1:Transaction>';
+        $xml .= '<v1:CreditCardTxType>';
+        $xml .= '<v1:Type>';
+        $xml .= 'return';
+        $xml .= '</v1:Type>';
+        $xml .= '</v1:CreditCardTxType>';
+        $xml .= '<v1:Payment>';
+        $xml .= '<v1:ChargeTotal>' . $variables['chargeTotal']->getAmount() . '</v1:ChargeTotal>';
+        $xml .= '</v1:Payment>';
+        $xml .= '<v1:TransactionDetails>';
+        $xml .= '<v1:OrderId>';
+        $xml .= $variables['order']->getId();
+        $xml .= '</v1:OrderId>';
+        $xml .= '</v1:TransactionDetails>';
+        $xml .= '</v1:Transaction>';
+        $xml .= '</fdggwsapi:FDGGWSApiOrderRequest>';
+        $xml .= '</SOAP-ENV:Body>';
+        $xml .= '</SOAP-ENV:Envelope>';
+
+        return $xml;
+    }
+
+    public function getValidVariablesForReturnTransaction()
+    {
+        $order = $this->newStandardOrder();
+        $order->setId('A-7548f849-0999-4014-a176-8b128f92d2fa');
+
+        return array(
+            'order' => $order,
+            'chargeTotal' => $this->newValidChargeTotalAmount()
+        );
+    }
+
+    public function newStandardOrder()
+    {
+        return new StandardOrder();
+    }
+
+    public function newValidStandardOrder()
+    {
+        $order = $this->newStandardOrder();
+
+        return $order;
+    }
+
 
 }

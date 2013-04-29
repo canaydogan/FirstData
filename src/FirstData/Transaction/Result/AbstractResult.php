@@ -26,6 +26,11 @@ abstract class AbstractResult
     protected $_errorMessage;
 
     /**
+     * @var string
+     */
+    protected $_approvalCode;
+
+    /**
      * @return boolean
      */
     public function isSuccess()
@@ -87,6 +92,22 @@ abstract class AbstractResult
     public function getErrorMessage()
     {
         return $this->_errorMessage;
+    }
+
+    /**
+     * @param string $approvalCode
+     */
+    public function setApprovalCode($approvalCode)
+    {
+        $this->_approvalCode = $approvalCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApprovalCode()
+    {
+        return $this->_approvalCode;
     }
 
 }
